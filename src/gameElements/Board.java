@@ -1,6 +1,8 @@
 package gameElements;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 
 public class Board {
@@ -188,9 +190,58 @@ public class Board {
 	}
 	
 	//----------TP2-----------------------
+	
+	public boolean isSolution(){
+		return this.numberOfQueens()==this.getSize();
+	}
+	
+	public ArrayList<Board> getSuccessors(){
+		ArrayList<Board> successors = new ArrayList<Board>();
+		for (int j=0;j<size;j++){
+			for (int i=0;i<size;i++){
+				if (isAccessible(j,i)){
+					Board b = clone();
+					b.placeQueen(j, i);
+					successors.add(b);
+				}
+			}
+		}
+		return successors;		
+	}
+	
+	
 	public ArrayList<Board> depthFirstSearch(Board b) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Board> sol = new ArrayList<Board>(); 
+		if (b.isSolution()){
+			sol.add(b);
+			return sol;
+		}
+		for (Board board : b.getSuccessors()){
+			sol.addAll(depthFirstSearch(board));
+			if (!sol.isEmpty() && sol.get(0).isSolution()){
+				sol.add(b);
+				return sol;
+			}
+		}
+		
+		
+		System.out.println(sol.toString());
+		
+		return sol;
+	}
+	
+	
+	public ArrayList<Board> depthFirstSearch() {
+		return depthFirstSearch(new Board(size));
+	}
+	
+	public String solutionSteps(Board b){
+		StringBuilder sb = new StringBuilder();
+		for(Board i : b.depthFirstSearch(b)){
+			sb.append(i.toStringAccess());
+			sb.append("\n\n");
+		}
+		return sb.toString();
 	}
 	
 	

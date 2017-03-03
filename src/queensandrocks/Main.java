@@ -1,12 +1,15 @@
 package queensandrocks;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Scanner;
 
 import gameElements.*;
 import graphics.GameUI;
 
 public class Main {
-	 public static void main(String[] args) {
+	 public static void main(String[] args) {/*
 		 Scanner sc= new Scanner(System.in);
 		 boolean jouer=true;
 		 System.out.println("Choisir une taille de tableau (supérieur à 0) : ");	
@@ -45,6 +48,36 @@ public class Main {
 			 }else{
 					System.out.println("La reine est hors plateau\n");
 			 }
-		 }
+		 }*/
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 Board b = new Board(3);
+		 
+		 //b.placeQueen(1, 3);
+		 //System.out.println(b.toStringAccess());
+		 
+		 Date d = new Date();
+		 long debut = d.getTime();
+		 System.out.println(b.solutionSteps(b));
+		 
+		 System.out.println(d.getTime()-debut);
+		
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
 	 }
 }
