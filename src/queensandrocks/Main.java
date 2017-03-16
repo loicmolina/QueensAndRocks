@@ -1,5 +1,6 @@
 package queensandrocks;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -9,7 +10,8 @@ import gameElements.*;
 import graphics.GameUI;
 
 public class Main {
-	 public static void main(String[] args) {/*
+	 public static void main(String[] args) {
+		 /*
 		 Scanner sc= new Scanner(System.in);
 		 boolean jouer=true;
 		 System.out.println("Choisir une taille de tableau (supérieur à 0) : ");	
@@ -53,31 +55,16 @@ public class Main {
 		 
 		 
 		 
+		 Board b = new Board(6);
 		 
+		 long debut = System.currentTimeMillis();
 		 
+		 System.out.println(b.solutionStepsArray(b));
 		 
-		 Board b = new Board(3);
-		 
-		 //b.placeQueen(1, 3);
-		 //System.out.println(b.toStringAccess());
-		 
-		 Date d = new Date();
-		 long debut = d.getTime();
-		 System.out.println(b.solutionSteps(b));
-		 
-		 System.out.println(d.getTime()-debut);
+		 long fin = (System.currentTimeMillis() - debut);
+		 System.out.println( fin + "ms");
 		
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
+		
+		
 	 }
 }
