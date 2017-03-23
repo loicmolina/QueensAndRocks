@@ -1,11 +1,12 @@
 package gameElements;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 
 public class Board {
+	protected final static int queenValue = 5;
+	protected final static int rockValue = 2;
 	protected Game game;
 	protected int size;
 	protected int numberOfPieces;
@@ -14,7 +15,7 @@ public class Board {
 	protected int rockPlayer1;
 	
 	//ATTENTION
-	//Ceci est un squelette incomplet contenant uniquement le profil de quelques méthodes, dans le but de compiler la classe GameUI sans erreurs
+	//Ceci est un squelette incomplet contenant uniquement le profil de quelques m�thodes, dans le but de compiler la classe GameUI sans erreurs
 	//Il manque les getters et les setters ainsi que les classes externes telles que Square, Eval, Game, Player,...
 	
 	public Board(){
@@ -27,7 +28,7 @@ public class Board {
 		rockPlayer1 = size;
 		for (int i=0;i<size;i++){
 			for (int j=0;j<size;j++){
-				board[j][i]=game.getEmpty();
+				board[i][j]=game.getEmpty();
 			}
 		}
 		
@@ -42,7 +43,7 @@ public class Board {
 		rockPlayer1 = size;
 		for (int i=0;i<size;i++){
 			for (int j=0;j<size;j++){
-				board[j][i]=game.getEmpty();
+				board[i][j]=game.getEmpty();
 			}
 		}
 	}
@@ -116,7 +117,7 @@ public class Board {
 		StringBuilder res = new StringBuilder();
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				res.append(board[j][i].toString());
+				res.append(board[i][j].toString());
 			}
 			res.append("\n");
 		}
@@ -127,7 +128,7 @@ public class Board {
 		Square[][] newBoard = new Square[size][size];
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				newBoard[j][i]=board[j][i];
+				newBoard[i][j]=board[i][j];
 			}
 		}		
 		
@@ -138,7 +139,7 @@ public class Board {
 		boolean accessible = true;
 		for (int y=0;y<size;y++){
 			for (int x=0;x<size;x++){
-				if (board[x][y].toString().contains("Q")){ // Une autre reine a été trouvé
+				if (board[x][y].toString().contains("Q")){ // Une autre reine a �t� trouv�
 					if (x==i || y==j){  // alignement vertical
 						accessible=false;
 					}
@@ -156,10 +157,10 @@ public class Board {
 		StringBuilder res = new StringBuilder();
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (!isAccessible(j,i) && board[j][i].toString().equals("[  ]")){
+				if (!isAccessible(i,j) && board[i][j].toString().equals("[  ]")){
 					res.append("[XX]");
 				}else{
-					res.append(board[j][i].toString());
+					res.append(board[i][j].toString());
 				}
 			}
 			res.append("\n");
@@ -171,7 +172,7 @@ public class Board {
 		int nb=0;
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (isAccessible(j,i) && board[j][i].toString().equals("[  ]")){
+				if (isAccessible(i,j) && board[i][j].toString().equals("[  ]")){
 					nb++;
 				}
 			}
@@ -183,7 +184,7 @@ public class Board {
 		int nb=0;
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (board[j][i].toString().contains("Q")){
+				if (board[i][j].toString().contains("Q")){
 					nb++;
 				}
 			}
@@ -210,9 +211,9 @@ public class Board {
 		ArrayList<Board> successors = new ArrayList<Board>();
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (isAccessible(j,i)){
+				if (isAccessible(i,j)){
 					Board b = clone();
-					b.placeQueen(j, i);
+					b.placeQueen(i, j);
 					successors.add(b);
 				}
 			}
@@ -265,10 +266,10 @@ public class Board {
 		ArrayList<Board> successors = new ArrayList<Board>();
 		int nbReine = this.numberOfQueens();
 		for (int i=0;i<size;i++){
-			if (isAccessible(nbReine,i)){
+			if (isAccessible(i,nbReine)){
 				Board board = clone();
 				
-				board.placeQueen(nbReine,i);
+				board.placeQueen(i,nbReine);
 				successors.add(board);
 			}
 		}
@@ -326,7 +327,7 @@ public class Board {
 		for (int j=0;j<size;j++){
 			pos=-1;
 			for (int i=0;i<size;i++){
-				if (board[j][i] instanceof Queen){
+				if (board[i][j] instanceof Queen){
 					pos=i;
 				}
 			}
@@ -342,7 +343,7 @@ public class Board {
 		
 		for (int i=0 ; i< array.length; i++){
 			if (array[i]!=-1){
-				b.placeQueen(array[i],i);
+				b.placeQueen(i,array[i]);
 			}
 		}
 		
@@ -357,7 +358,7 @@ public class Board {
 		for (int i = 0 ; i < array.length ; i++){
 			if (array[i]==-1){
 				for (int j = 0 ; j < array.length ; j++){
-					if (b.isAccessible(j, i)){
+					if (b.isAccessible(i, j)){
 						int[] succ = array.clone();
 						succ[i]=j;
 						arr.add(succ);
@@ -449,7 +450,7 @@ public class Board {
 		rockPlayer1=rp;
 	}
 	
-	public int getNumberOfRocksleft(Player player){
+	public int getNumberOfRocksLeft(Player player){
 		if(player.getNumber() == 0){
 			return rockPlayer0;
 		}else{
@@ -470,69 +471,306 @@ public class Board {
 		boolean diagHaut = true;
 		boolean diagBas = true;
 		boolean ligne = true;
+		boolean colonne = true;
 		
-		for (int k = 0 ; k<i ; k++){		
-			if (board[j][k].getPlayer().getNumber()!=nPlayer && board[j][k] instanceof Queen){
+		int posDiagBas, posDiagHaut;
+		
+		if (board[i][j] instanceof Queen || board[i][j] instanceof Rock){
+			return false;
+		}
+		
+		for (int k = 0 ; k<=i ; k++){	
+			if (board[k][j].getPlayer().getNumber()!=nPlayer && board[k][j] instanceof Queen){
 				ligne = false;
 			}else{
-				ligne = true;
+				if (board[k][j] instanceof Rock){
+					ligne = true;
+				}
 			}
-			int posDiagHaut = j-i-k;
-			if (posDiagHaut>=0){
-				if (board[posDiagHaut][k].getPlayer().getNumber()!=nPlayer && board[posDiagHaut][k] instanceof Queen){
+			
+			if (i == k){
+				for (int m = 0 ; m < j; m ++){
+					if (board[k][m].getPlayer().getNumber()!=nPlayer && board[k][m] instanceof Queen){
+						colonne = false;
+					}else{
+						if (board[k][m] instanceof Rock){
+							colonne = true;
+						}
+					}
+				}
+			}
+			
+			posDiagHaut = j-(i-k);
+			if (posDiagHaut > -1){
+				if (board[k][posDiagHaut].getPlayer().getNumber() != nPlayer && board[k][posDiagHaut] instanceof Queen){
 					diagHaut = false;
 				}else{
-					diagHaut = true;
+					if (board[k][posDiagHaut] instanceof Rock){
+						diagHaut = true;
+					}
 				}
-			}
-			int posDiagBas = j+i-k;
-			if (posDiagBas<size){
-				if (board[posDiagHaut][k].getPlayer().getNumber()!=nPlayer && board[posDiagHaut][k] instanceof Queen){
-					diagBas = false;
+			}	
+			
+			posDiagBas = j + (i - k);
+			if (posDiagBas < size){
+				if (board[k][posDiagBas].getPlayer().getNumber() != nPlayer && board[k][posDiagBas] instanceof Queen){
+					diagBas = false ;
 				}else{
-					diagBas = true;
+					if (board[k][posDiagBas] instanceof Rock){
+						diagBas = true;
+					}
 				}
-			}
+			}			
+			
 		}
-		if (ligne && diagBas && diagHaut == false){
+		
+		if ((ligne && diagBas && diagHaut && colonne) == false){
 			return false;
 		}
 		
 		
+		ligne = true;
+		diagHaut = true;
+		diagBas = true;
+		colonne = true;
+		
+		for(int l = size-1; l >= i; l--){
+			if (board[l][j].getPlayer().getNumber()!=nPlayer && board[l][j] instanceof Queen){
+				ligne = false;
+			}else{
+				if (board[l][j] instanceof Rock){
+					ligne = true;
+				}
+			}
+			
+			if (i == l){
+				for (int m = size-1 ; m > j; m--){
+					if (board[l][m].getPlayer().getNumber()!=nPlayer && board[l][m] instanceof Queen){
+						colonne = false;
+					}else{
+						if (board[l][m] instanceof Rock){
+							colonne = true;
+						}
+					}
+				}
+			}
+			
+			posDiagHaut = j - (l - i);
+			if (posDiagHaut >= 0){
+				if (board[l][posDiagHaut].getPlayer().getNumber() != nPlayer && board[l][posDiagHaut] instanceof Queen){
+					diagHaut = false;
+				}else{
+					if (board[l][posDiagHaut] instanceof Rock){
+						diagHaut = true;
+					}
+				}
+			}
+			
+			posDiagBas = j + (l - i);
+			if (posDiagBas < size){
+				if (board[l][posDiagBas].getPlayer().getNumber() != nPlayer && board[l][posDiagBas] instanceof Queen){
+					diagBas = false;
+				}else{
+					if (board[l][posDiagBas] instanceof Rock){
+						diagBas = true;
+					}
+				}
+			}	
+		}
+		
+		return diagHaut && diagBas && ligne && colonne;
+	}
+	
+	public int numberOfAccessible2(Player player){
+		int res = 0;
+		for (int j=0;j<size;j++){
+			for (int i=0;i<size;i++){
+				if (isAccessible2(i, j, player) && board[i][j].toString().equals("[  ]")){
+					res++;
+				}
+			}
+		}
+		return res;
+	}
+	
+	public String toStringAccess2(Player player){
+		StringBuilder res = new StringBuilder();
+		for (int j=0;j<size;j++){
+			for (int i=0;i<size;i++){
+				if (!isAccessible2(i, j, player) && board[i][j].toString().equals("[  ]")){
+					res.append("[XX]");
+				}else{
+					res.append(board[i][j].toString());
+				}
+			}
+			res.append("\n");
+		}
+		return res.toString();
+	}
+	
+	public int numberOfQueens2(Player player){
+		int res = 0;
+		
+		for (int j = 0; j < size; j++){
+			for (int i = 0; i < size; i++){
+				if (board[i][j].toString().contains("Q") && board[i][j].getPlayer().getNumber() == player.getNumber()){
+					res++;
+				}
+			}
+		}
+		
+		return res;
+	}
+	
+	public int numberOfRocks2(Player player){
+		int res = 0;
+		
+		for (int j = 0; j < size; j++){
+			for (int i = 0; i < size; i++){
+				if (board[i][j].toString().contains("R") && board[i][j].getPlayer().getNumber() == player.getNumber()){
+					res++;
+				}
+			}
+		}
+		
+		return res;
 	}
 	
 	
 	public boolean placeQueen2(int i, int j, Player player) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		
+		if (isAccessible2(i,j, player)){
+			if(player.getNumber() == 0){
+				this.setPiece(i, j, game.getQueen0());
+			}else{
+				this.setPiece(i, j, game.getQueen1());
+			}
+			res = true;
+		}
+		
+		return res;
 	}
 
 	public boolean placeRock2(int i, int j, Player player) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public int getNumberOfRocksLeft(Player player){
-		// TODO Auto-generated method stub
-		return 0;  
+		boolean res = false;
+		
+		if(getNumberOfRocksLeft(player) > 0){
+			if (!board[i][j].toString().contains("Q") && !board[i][j].toString().contains("R")){
+				if(player.getNumber() == 0){
+					this.setPiece(i, j, game.getRock0());
+				}else{
+					this.setPiece(i, j, game.getRock1());
+				}
+				useRock(player);
+				res = true;
+			}
+		}
+
+		return res;
 	}
 	
 	public int getScore(Player player){
-		// TODO Auto-generated method stub
-		return 0;
+		return numberOfQueens2(player)*queenValue + numberOfRocks2(player)*rockValue;
 	}
 
 
 
 	//----------------------TP4&5--------------------------
 	public boolean isFinal() {
-		// TODO Auto-generated method stub
-		return false;
+		Player p0 = this.getGame().getPlayer0();
+		Player p1 = this.getGame().getPlayer1();
+		return (this.getNumberOfRocksLeft(p0) == 0  && this.numberOfAccessible2(p0)==0) || (this.getNumberOfRocksLeft(p1) == 0  && this.numberOfAccessible2(p1)==0) ;
+	}
+	
+	public ArrayList<Board> getSuccessors2(Player player){
+		ArrayList<Board> successors = new ArrayList<Board>();
+		for (int j=0;j<size;j++){
+			for (int i=0;i<size;i++){
+				if (!(board[i][j] instanceof Queen) && !(board[i][j] instanceof Rock)){
+					Board bR = clone();
+					bR.placeRock2(i, j, player);
+					successors.add(bR);
+				}
+				if (isAccessible2(i,j, player)){
+					Board bQ = clone();
+					bQ.placeQueen2(i, j, player);
+					successors.add(bQ);					
+				}
+			}
+		}
+		return successors;	
+		
+	}
+	
+	public float evaluation(Board b, Player player, int c, Eval e, Player playing){
+		ArrayList<Board> S;
+		float score_max, score_min, eval;
+		eval = e.getEval(player, b);
+		
+		if (b.isFinal()){
+			if (eval > 0){ //Partie gagnée par la machine
+				return Float.POSITIVE_INFINITY;
+			}else{
+				if (eval < 0){ //Partie perdue par la machine
+					return Float.NEGATIVE_INFINITY;
+				}else{ // e.getEval(player, b) == 0   Match nul
+					return 0;
+				}
+			}
+		}
+		
+		if (c == 0){
+			return eval;
+		}
+		
+		S = b.getSuccessors2(playing);
+		
+		Player adverse;
+		if (player.equals(b.getGame().getPlayer0())){
+			adverse = b.getGame().getPlayer1();
+		}else{
+			adverse = b.getGame().getPlayer0();
+		}
+		
+		if (playing.equals(player)){
+			score_max = Float.NEGATIVE_INFINITY;
+			
+			for (Board bo : S){
+				score_max = Math.max(score_max, evaluation(bo, player, c-1, e, adverse));
+			}
+			return score_max;			
+		}else{
+			score_min = Float.POSITIVE_INFINITY;
+			
+			for (Board bo : S){
+				score_min = Math.min(score_min, evaluation(bo, player, c-1, e, adverse));
+			}
+			return score_min;
+		}
 	}
 
 	public Board minimax(Board b, Player currentPlayer, int minimaxDepth, Eval evaluation) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Board> S = b.getSuccessors2(currentPlayer);
+		float score_max, score;
+		score_max = Float.NEGATIVE_INFINITY;
+		
+		if (b.isFinal()){
+			return b;
+		}
+		
+		Board sortie = new Board(b.size);		
+		
+		
+		for (Board bo : S){
+			score = evaluation (bo, currentPlayer, minimaxDepth, evaluation, currentPlayer);
+			if (score >= score_max){
+				sortie = bo;
+				score_max = score;
+			}
+		}
+		
+		return sortie;
 	}
 
 }
