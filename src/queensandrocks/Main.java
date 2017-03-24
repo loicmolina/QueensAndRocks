@@ -287,7 +287,7 @@ public class Main {
 		 }
 		 */
 		 
-		 /* ----- TP4 ------- Humain contre Machine 
+		 /* ----- TP4 ------- Humain contre Machine */
 		 
 		 Scanner sc= new Scanner(System.in);
 		 boolean jouer=true;
@@ -315,7 +315,7 @@ public class Main {
 		 Player p0 = b.getGame().getPlayer0();
 		 Player p1 = b.getGame().getPlayer1();
 
-		 //long debut = System.currentTimeMillis();
+		 long debut = System.currentTimeMillis();
 		 
 		 if(choixJeu == 1){
 			 while (jouer){		
@@ -409,30 +409,25 @@ public class Main {
 				 if (b.isFinal()){
 					 //System.out.println("\nPlateau final :\n"+b.toStringAccess());
 					 //System.out.println("Fin du jeu !");
-					 //System.out.println("Scores finaux : \n Joueur0 : "+ b.getScore(p0) + "\n Joueur1 : "+ b.getScore(p1));
+					 System.out.println("Scores finaux : \n Joueur0 : "+ b.getScore(p0) + "\n Joueur1 : "+ b.getScore(p1));
 					 jouer=false;
 				 }else{
-					 //		 try {
-					 //			 System.out.println("-- Entree pour continuer --");
-					 //			 System.in.read();
-					 //		} catch (IOException e) {
-					 //			e.printStackTrace();
-					 //		}
+					 //try {
+					 //	 System.out.println("-- Entree pour continuer --");
+					 //	 System.in.read();
+					 //} catch (IOException e) {
+					 //	e.printStackTrace();
+					 //}
 					 joueur0 = !joueur0;
 				 }
 			 }
 			 //System.out.println("");
-		 }*/
+		 }
 		 
-		 //long fin = (System.currentTimeMillis() - debut);
-		 //System.out.println( fin + "ms");
+		 long fin = (System.currentTimeMillis() - debut);
+		 System.out.println("Temps total : " + fin + "ms");
 
-		 //jouer(3,3);
-		 Board b = new Board(4);
-		 GameUI i = new GameUI(b);
-		 i.setMinimaxDepth(3);
-		 i.launch();
-		 
+		 //jouer(5,2);		 
 	 }
 	 
 	 public static void jouer(int taille, int profondeur){

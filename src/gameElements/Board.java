@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 
 public class Board {
-	protected final static int queenValue = 5;
+	protected final static int queenValue = 10;
 	protected final static int rockValue = 2;
 	protected Game game;
 	protected int size;
@@ -680,14 +680,14 @@ public class Board {
 	public boolean isFinal() {
 		Player p0 = this.getGame().getPlayer0();
 		Player p1 = this.getGame().getPlayer1();
-		return (this.getNumberOfRocksLeft(p0) == 0  && this.numberOfAccessible2(p0)==0) || (this.getNumberOfRocksLeft(p1) == 0  && this.numberOfAccessible2(p1)==0) ;
+		return ((this.getNumberOfRocksLeft(p0) == 0  && this.numberOfAccessible2(p0)==0) || (this.getNumberOfRocksLeft(p1) == 0  && this.numberOfAccessible2(p1)==0)) ;
 	}
 	
 	public ArrayList<Board> getSuccessors2(Player player){
 		ArrayList<Board> successors = new ArrayList<Board>();
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (!(board[i][j] instanceof Queen) && !(board[i][j] instanceof Rock)){
+				if (this.getNumberOfRocksLeft(player)>0 && !(board[i][j] instanceof Queen) && !(board[i][j] instanceof Rock)){
 					Board bR = clone();
 					bR.placeRock2(i, j, player);
 					successors.add(bR);
@@ -727,7 +727,7 @@ public class Board {
 		S = b.getSuccessors2(playing);
 		
 		Player adverse;
-		if (player.equals(b.getGame().getPlayer0())){
+		if (playing.equals(b.getGame().getPlayer0())){
 			adverse = b.getGame().getPlayer1();
 		}else{
 			adverse = b.getGame().getPlayer0();
@@ -752,21 +752,27 @@ public class Board {
 
 	public Board minimax(Board b, Player currentPlayer, int minimaxDepth, Eval evaluation) {
 		ArrayList<Board> S = b.getSuccessors2(currentPlayer);
-		float score_max, score;
-		score_max = Float.NEGATIVE_INFINITY;
+		float score_max, score_min, score;
 		
 		if (b.isFinal()){
 			return b;
 		}
 		
-		Board sortie = new Board(b.size);		
+		score_min = Float.POSITIVE_INFINITY;
+		score_max = Float.NEGATIVE_INFINITY;
 		
+		Board sortie = new Board(b.size);		
 		
 		for (Board bo : S){
 			score = evaluation (bo, currentPlayer, minimaxDepth, evaluation, currentPlayer);
-			if (score >= score_max){
+			if (b.numberOfPieces == 0 && score <= score_min){
 				sortie = bo;
-				score_max = score;
+				score_min = score;
+			}else{
+				if (b.numberOfPieces !=0 && score >= score_max){
+					sortie = bo;
+					score_max = score;
+				}
 			}
 		}
 		
