@@ -287,7 +287,7 @@ public class Main {
 		 }
 		 */
 		 
-		 /* ----- TP4 ------- Humain contre Machine */
+		 /* ----- TP4 ------- Humain contre Machine 
 		 
 		 Scanner sc= new Scanner(System.in);
 		 boolean jouer=true;
@@ -295,7 +295,7 @@ public class Main {
 		 boolean isOk = true;
 		 boolean tour1 = true;
 		 int choixJeu = 0, decisionX, decisionY;
-		 Eval eval = new Eval0();
+		 Eval eval = new Eval1();
 
 
 		 while(choixJeu != 1 && choixJeu != 2){
@@ -427,14 +427,16 @@ public class Main {
 		 long fin = (System.currentTimeMillis() - debut);
 		 System.out.println("Temps total : " + fin + "ms");
 
-		 //jouer(5,2);		 
+		*/
+		 //jouer(5,2);	
+		 optimisation();
 	 }
 	 
 	 public static void jouer(int taille, int profondeur){
 		 boolean jouer=true;
 		 boolean joueur0 = true;
 		 float score;
-		 Eval eval = new Eval0();
+		 Eval eval= new Eval0();
 
 		 Board b = new Board(taille);
 
@@ -464,7 +466,68 @@ public class Main {
 				 joueur0 = !joueur0;
 			 }
 		 }
+		 
 	 }
 
+	 
+	 public static boolean jouerEval(int taille, int profondeur, Eval evalp0, Eval evalp1){
+		 boolean jouer=true;
+		 boolean joueur0 = true;
+		 boolean victoireP0 = true;
+		 float score;
+		 Eval eval = new Eval0();
 
+		 Board b = new Board(taille);
+
+		 Player p0 = b.getGame().getPlayer0();
+		 Player p1 = b.getGame().getPlayer1();
+
+		 while (jouer){	
+			 if(joueur0){
+				 b = b.minimax(b, p0, profondeur, evalp0);
+			 }else{
+				 b = b.minimax(b, p1, profondeur, evalp1);
+			 }
+
+			 if (b.isFinal()){
+				 jouer=false;
+				 score = eval.getEval(p0, b);
+				 if (score > 0){
+					 System.out.println("Joueur 0 gagne");
+					 victoireP0 = true;
+				 }else{
+					 if (score < 0){
+						 System.out.println("Joueur 1 gagne");
+						 victoireP0 = false;
+					 }else{
+						 System.out.println("Match nul");
+						 victoireP0 = true;
+					 }
+				 }
+			 }else{
+				 joueur0 = !joueur0;
+			 }
+		 }
+		 return victoireP0;
+	 }
+	 
+	 public static float optimisation(){
+		 boolean victoirep0 ;
+		EvalLambda evalLambda = new EvalLambda();
+		EvalLambda evalLambdaP = new EvalLambda();
+		evalLambdaP.setLambda(evalLambda.getLambda() + 0.01f);
+		while (evalLambdaP.getLambda() - evalLambda.getLambda() <= 0.1){
+			victoirep0 = jouerEval(5,2,evalLambda,evalLambdaP);
+			if (victoirep0){
+				evalLambdaP.setLambda(evalLambdaP.getLambda() + 0.01f);
+			}else{
+				evalLambda.setLambda(evalLambdaP.getLambda());
+			}
+			System.out.println("Lambda : "+evalLambda.getLambda()+" \nLambdaP : "+evalLambdaP.getLambda());
+		}
+		return evalLambda.getLambda();
+		 
+	 }
+	 
+	 
 }

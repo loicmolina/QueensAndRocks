@@ -585,7 +585,7 @@ public class Board {
 		int res = 0;
 		for (int j=0;j<size;j++){
 			for (int i=0;i<size;i++){
-				if (isAccessible2(i, j, player) && board[i][j].toString().equals("[  ]")){
+				if (isAccessible2(i, j, player)){
 					res++;
 				}
 			}
@@ -765,18 +765,103 @@ public class Board {
 		
 		for (Board bo : S){
 			score = evaluation (bo, currentPlayer, minimaxDepth, evaluation, currentPlayer);
-			if (b.numberOfPieces == 0 && score <= score_min){
+			/*if (b.numberOfPieces == 0 && score <= score_min){
 				sortie = bo;
 				score_min = score;
-			}else{
-				if (b.numberOfPieces !=0 && score >= score_max){
+			}else{*/
+				if (/*b.numberOfPieces !=0 &&*/ score >= score_max){
 					sortie = bo;
 					score_max = score;
 				}
-			}
+			//}
 		}
 		
 		return sortie;
 	}
+	
+	//----------------------TP5--------------------------
 
+	public float squaresAroundQueens(Player player){
+		boolean[][] imprenable = new boolean[size][size];
+		for (int i = 0 ;i < size ; i++){
+			for (int j = 0 ; j<size ; j++){
+				imprenable[j][i]=false;
+			}
+		}
+		float res=0;
+		
+		for (int j=0; j<size; j++){
+			for (int i=0; i<size; i++){
+				if(board[i][j] instanceof Queen && board[i][j].getPlayer().equals(player)){
+					if (i==0 || i==size-1 || j==0 || j==size-1){ //Traitement des bords et des coins
+						if((i==0 && j==0) || (i==0 && j==size-1) || (i==size-1 && j==0) || (i==size-1 && j==size-1)){   //Traitement des coins
+							int adjI = Math.abs(i-1), adjJ = Math.abs(j-1);
+							if (!imprenable[adjI][j] && !(board[adjI][j] instanceof Queen || board[adjI][j] instanceof Rock)){
+								res++;
+								imprenable[adjI][j] = true;
+							}
+							if (!imprenable[i][adjJ] && !(board[i][adjJ] instanceof Queen || board[i][adjJ] instanceof Rock)){
+								res++;
+								imprenable[i][adjJ] = true;
+							}
+							if (!imprenable[adjI][adjJ] && !(board[adjI][adjJ] instanceof Queen || board[adjI][adjJ] instanceof Rock)){
+								res++;
+								imprenable[adjI][adjJ] = true;
+							}
+							
+						}else{  //Traitement des bords
+							if (i==0 || i==size-1){ //Coté haut ou bas
+								int adjI;
+								for (int l=0 ; l<=1 ;l++){
+									adjI = Math.abs(i-l);
+									if (!imprenable[adjI][j-1] && !(board[adjI][j-1] instanceof Queen || board[adjI][j-1] instanceof Rock)){
+										res++;
+										imprenable[adjI][j-1] = true;
+									}
+									if (!imprenable[adjI][j+1] && !(board[adjI][j+1] instanceof Queen || board[adjI][j+1] instanceof Rock)){
+										res++;
+										imprenable[adjI][j+1] = true;
+									}									
+								}
+								if (!imprenable[Math.abs(i-1)][j] && !(board[Math.abs(i-1)][j] instanceof Queen || board[Math.abs(i-1)][j] instanceof Rock)){
+									res++;
+									imprenable[Math.abs(i-1)][j] = true;
+								}
+							}else{
+								if (j==0 || j==size-1){ //Coté gauche ou droite
+									int adjJ;
+									for (int l=0 ; l<=1 ;l++){
+										adjJ = Math.abs(j-l);
+										if (!imprenable[i-1][adjJ] && !(board[i-1][adjJ] instanceof Queen || board[i-1][adjJ] instanceof Rock)){
+											res++;
+											imprenable[i-1][adjJ] = true;
+										}
+										if (!imprenable[i+1][adjJ] && !(board[i+1][adjJ] instanceof Queen || board[i+1][adjJ] instanceof Rock)){
+											res++;
+											imprenable[i+1][adjJ] = true;
+										}									
+									}
+									if (!imprenable[i][Math.abs(j-1)] && !(board[i][Math.abs(j-1)] instanceof Queen || board[i][Math.abs(j-1)] instanceof Rock)){
+										res++;
+										imprenable[i][Math.abs(j-1)] = true;
+									}
+								}
+							}
+						}
+					}else{ //Traitement des cases hors bord
+						for (int l = j-1 ; l<= j+1; l++){
+							for (int m = i-1 ; m <= i+1; m++){
+								if (!imprenable[m][l] && !(board[m][l] instanceof Queen || board[m][l] instanceof Rock)){
+									res++;
+									imprenable[m][l] = true;
+								}
+							}
+						}
+					}					
+				}
+			}
+		}
+		
+		return res;
+	}
 }
