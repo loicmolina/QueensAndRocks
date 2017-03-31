@@ -20,6 +20,4 @@ public class EvalLambda implements Eval{
 		this.lambda = lambda;
 	}
 	
-	
-
 }

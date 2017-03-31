@@ -656,7 +656,7 @@ public class Board {
 		boolean res = false;
 		
 		if(getNumberOfRocksLeft(player) > 0){
-			if (!board[i][j].toString().contains("Q") && !board[i][j].toString().contains("R")){
+			if (!(board[i][j] instanceof Queen || board[i][j] instanceof Rock)){
 				if(player.getNumber() == 0){
 					this.setPiece(i, j, game.getRock0());
 				}else{
@@ -680,7 +680,8 @@ public class Board {
 	public boolean isFinal() {
 		Player p0 = this.getGame().getPlayer0();
 		Player p1 = this.getGame().getPlayer1();
-		return ((this.getNumberOfRocksLeft(p0) == 0  && this.numberOfAccessible2(p0)==0) || (this.getNumberOfRocksLeft(p1) == 0  && this.numberOfAccessible2(p1)==0)) ;
+		boolean complete = (this.numberOfPieces == this.size*this.size);
+		return (complete || ((this.getNumberOfRocksLeft(p0) == 0  && this.numberOfAccessible2(p0)==0) || (this.getNumberOfRocksLeft(p1) == 0  && this.numberOfAccessible2(p1)==0))) ;
 	}
 	
 	public ArrayList<Board> getSuccessors2(Player player){
@@ -765,15 +766,15 @@ public class Board {
 		
 		for (Board bo : S){
 			score = evaluation (bo, currentPlayer, minimaxDepth, evaluation, currentPlayer);
-			/*if (b.numberOfPieces == 0 && score <= score_min){
+			if (b.numberOfPieces == 0 && score <= score_min){
 				sortie = bo;
 				score_min = score;
-			}else{*/
-				if (/*b.numberOfPieces !=0 &&*/ score >= score_max){
+			}else{
+				if (b.numberOfPieces !=0 && score >= score_max){
 					sortie = bo;
 					score_max = score;
 				}
-			//}
+			}
 		}
 		
 		return sortie;
